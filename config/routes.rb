@@ -1,3 +1,10 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  resources :users, param: :_name
+  post '/auth/login'       =>'authentication#login'
+  get '/*a'                =>'application#not_found'
+  #User actions
+  get    '/users'          => 'users#index'
+  post   '/users/create'   => 'users#create'
+  patch  '/user/:id'       => 'users#update'
+  delete '/user/:id'       => 'users#destroy'
 end
