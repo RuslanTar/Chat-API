@@ -33,7 +33,6 @@ class UsersController < ApplicationController
       render json: {resultCode: 1, user: @user, errors: @user.errors.full_messages},
              status: :ok #:unprocessable_entity
     end
-    end
   end
 
   # DELETE /users/{name}
