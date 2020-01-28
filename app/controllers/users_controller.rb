@@ -49,9 +49,9 @@ class UsersController < ApplicationController
   # If the user is logged-in we will return the user's information.
   def current
     if @user.update!(last_login: Time.now)
-      render json: { resultCode: 0, status: :ok, user: {id: @user.id, name: @user.name, email: @user.email} }
+      render json: { resultCode: 0, user: {id: @user.id, name: @user.name, email: @user.email} }, status: :ok
     else
-      render json: { resultCode: 1, status: :ok, errors: @user.errors.full_messages }
+      render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :ok
     end
 
   end
