@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
 
-  after_filter :set_access_control_headers
+  # after_filter :set_access_control_headers
 
   def not_found
     render json: { error: 'not_found' }
