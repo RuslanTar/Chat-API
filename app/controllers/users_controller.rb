@@ -53,12 +53,12 @@ class UsersController < ApplicationController
   # Call this method to check if the user is logged-in.
   # If the user is logged-in we will return the user's information.
   def current
-
-    if @user.update!(last_login: Time.now)
-      render json: { resultCode: 0, user: @user }
-    else
-      render json: { resultCode: 1, status:200, user: @user, request: request, header: header, decoded: JsonWebToken.decode(header), current_user_user_id: User.find(@decoded[:user_id]), current_user_id: User.find(@decoded[:id]), find_default: User.find(params[:id])}
-    end
+    render json: { msg: "Halo!" }
+    # if @user.update!(last_login: Time.now)
+    #   render json: { resultCode: 0, user: @user }
+    # else
+    #   render json: { resultCode: 1, status:200, user: @user, request: request, header: header, decoded: JsonWebToken.decode(header), current_user_user_id: User.find(@decoded[:user_id]), current_user_id: User.find(@decoded[:id]), find_default: User.find(params[:id])}
+    # end
 
   end
 
