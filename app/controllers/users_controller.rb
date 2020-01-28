@@ -41,7 +41,8 @@ class UsersController < ApplicationController
     header = header.split(' ').last if header
     begin
       @decoded = JsonWebToken.decode(header)
-      @current_user = User.find(@decoded[:user_id])
+      @current_user = User.find(@decoded[:id])
+      render json: { request: request, header: header, decoded: @decoded, current_user_user_id: @current_user, current_user_id: User.find(@decoded[:id]), find_default: User.find(params[:id])}
     if @current_user.destroy
      render json: { status: 200, message: 'User has been deleted.' }
     end
