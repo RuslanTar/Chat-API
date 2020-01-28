@@ -17,18 +17,22 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      render json: @user, status: :created
+      render json: { resultCode: 0, user: @user }, status: :created
     else
-      render json: { errors: @user.errors.full_messages },
-             status: :unprocessable_entity
+      render json: { resultCode: 1, errors: @user.errors.full_messages },
+             status: :ok #:unprocessable_entity
     end
   end
 
   # PUT /users/{name}
   def update
-    unless @user.update(user_params)
-      render json: { errors: @user.errors.full_messages },
-             status: :unprocessable_entity
+    if @user.update(user_params)
+      render json: {resultCode: 0},
+             status: :ok
+    else
+      render json: {resultCode: 1, user: @user, errors: @user.errors.full_messages},
+             status: :ok #:unprocessable_entity
+    end
     end
   end
 
