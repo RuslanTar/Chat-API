@@ -34,10 +34,9 @@ class UsersController < ApplicationController
 
   # DELETE /users/{name}
   def destroy
-    @user.destroy
-    #if @user.destroy
-    #  render json: { status: 200, msg: 'User has been deleted.' }
-    #end
+    if @user.destroy
+     render json: { status: 200, msg: 'User has been deleted.' }
+    end
   end
 
   # Call this method to check if the user is logged-in.
