@@ -47,7 +47,7 @@ class UsersController < ApplicationController
     # if @user.destroy
     #  render json: { status: 200, message: 'User has been deleted.' }
     # end
-    end
+    # end
   end
 
   # Call this method to check if the user is logged-in.
