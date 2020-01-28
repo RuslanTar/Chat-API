@@ -37,7 +37,7 @@ class UsersController < ApplicationController
 
   # DELETE /users/{name}
   def destroy
-    render json: { status:200, request: request, header: header, decoded: JsonWebToken.decode(header), current_user_user_id: User.find(@decoded[:user_id]), current_user_id: User.find(@decoded[:id]), find_default: User.find(params[:id])}
+
     # @user.destroy
     # header = request.headers['Authorization']
     # header = header.split(' ').last if header
@@ -45,7 +45,9 @@ class UsersController < ApplicationController
     #   @decoded = JsonWebToken.decode(header)
     #   @current_user = User.find(@decoded[:id])
     if @user.destroy
-     render json: { resultCode: 1, status: 200, message: 'User has been deleted.' }
+     render json: { resultCode: 0, status: 200, message: 'User has been deleted.' }
+    else
+      render json: { resultCode: 1, status:200, user: @user, request: request, header: header, decoded: JsonWebToken.decode(header), current_user_user_id: User.find(@decoded[:user_id]), current_user_id: User.find(@decoded[:id]), find_default: User.find(params[:id])}
     end
     # end
   end
