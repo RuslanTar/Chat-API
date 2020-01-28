@@ -27,7 +27,7 @@ class UsersController < ApplicationController
   # PUT /users/{name}
   def update
     if @user.update(user_params)
-      render json: { resultCode: 0 },
+      render json: { resultCode: 0, message: "Updates succesful"},
              status: :ok
     else
       render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
