@@ -18,7 +18,7 @@ class AuthenticationController < ApplicationController
       end
       render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M")}, status: :ok
     else
-      render json: { resultCode: 1, error: 'Incorrect login or password' }, status: :ok #:unauthorized
+      render json: { resultCode: 1, errors: 'Incorrect login or password' }, status: :ok #:unauthorized
     end
   end
 

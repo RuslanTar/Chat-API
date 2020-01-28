@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
   before_action :set_access_control_headers
 
   def not_found
-    render json: { error: 'not_found' }
+    render json: { errors: 'not_found' }
   end
 
   def cors_preflight_check
