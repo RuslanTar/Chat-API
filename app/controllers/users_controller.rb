@@ -30,7 +30,7 @@ class UsersController < ApplicationController
       render json: { resultCode: 0, message: "Updates succesful"},
              status: :ok
     else
-      render json: { resultCode: 1, user: [user: @user, errors: @user.errors.full_messages]},
+      render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
              status: :ok #:unprocessable_entity
     end
   end
@@ -49,9 +49,9 @@ class UsersController < ApplicationController
   # If the user is logged-in we will return the user's information.
   def current
     if @user.update!(last_login: Time.now)
-      render json: { resultCode: 0, id: @user.id, name: @user.name, email: @user.email }
+      render json: { resultCode: 0, status: :ok, user: {id: @user.id, name: @user.name, email: @user.email} }
     else
-      render json: { resultCode: 1, status: 200, errors: @user.errors.full_messages }
+      render json: { resultCode: 1, status: :ok, errors: @user.errors.full_messages }
     end
 
   end
