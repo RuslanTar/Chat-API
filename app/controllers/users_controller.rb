@@ -30,7 +30,7 @@ class UsersController < ApplicationController
       render json: { resultCode: 0, message: "Updates succesful"},
              status: :ok
     else
-      render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
+      render json: { resultCode: 1, user: [user: @user, errors: @user.errors.full_messages]},
              status: :ok #:unprocessable_entity
     end
   end
