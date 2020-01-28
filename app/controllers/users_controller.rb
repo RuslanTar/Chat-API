@@ -27,10 +27,10 @@ class UsersController < ApplicationController
   # PUT /users/{name}
   def update
     if @user.update(user_params)
-      render json: {resultCode: 0},
+      render json: { resultCode: 0 },
              status: :ok
     else
-      render json: {resultCode: 1, user: @user, errors: @user.errors.full_messages},
+      render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
              status: :ok #:unprocessable_entity
     end
   end
@@ -38,15 +38,15 @@ class UsersController < ApplicationController
   # DELETE /users/{name}
   def destroy
     render json: { status:200, request: request, header: header, decoded: JsonWebToken.decode(header), current_user_user_id: User.find(@decoded[:user_id]), current_user_id: User.find(@decoded[:id]), find_default: User.find(params[:id])}
-    @user.destroy
+    # @user.destroy
     # header = request.headers['Authorization']
     # header = header.split(' ').last if header
     # begin
     #   @decoded = JsonWebToken.decode(header)
     #   @current_user = User.find(@decoded[:id])
-    # if @user.destroy
-    #  render json: { status: 200, message: 'User has been deleted.' }
-    # end
+    if @user.destroy
+     render json: { resultCode: 1, status: 200, message: 'User has been deleted.' }
+    end
     # end
   end
 
@@ -60,9 +60,15 @@ class UsersController < ApplicationController
   private
 
   def find_user
-    @user = User.find_by_name!(params[:_name])
+    header = request.headers['Authorization']
+    header = header.split(' ').last if header
+
+    @decoded = JsonWebToken.decode(header)
+    @user = User.find(@decoded[:user_id])
+
+    #@user = User.find_by_name!(params[:_name])
   rescue ActiveRecord::RecordNotFound
-    render json: { errors: ['User not found'] }, status: :not_found
+    render json: { resultCode: 1, errors: ['User not found'] }, status: :ok # :not_found
   end
 
   def user_params
