@@ -37,15 +37,10 @@ class UsersController < ApplicationController
 
   # DELETE /users/{name}
   def destroy
-
-    # @user.destroy
-    # header = request.headers['Authorization']
-    # header = header.split(' ').last if header
-    # begin
-    #   @decoded = JsonWebToken.decode(header)
-    #   @current_user = User.find(@decoded[:id])
     if @user.destroy
-     render json: { resultCode: 0, status: 200, message: 'User has been deleted.' }
+      render json: { resultCode: 0, status: 200, message: 'User has been deleted.' }
+    else
+      render json: { resultCode: 1, status: 200, errors: @user.errors.full_messages }
     end
     # end
   end
@@ -54,9 +49,9 @@ class UsersController < ApplicationController
   # If the user is logged-in we will return the user's information.
   def current
     if @user.update!(last_login: Time.now)
-      render json: { resultCode: 0, user: @user }
+      render json: { resultCode: 0, id: @user.id, name: @user.name, email: @user.email }
     else
-      render json: { resultCode: 1, status:200, user: @user, request: request, header: header, decoded: JsonWebToken.decode(header), current_user_user_id: User.find(@decoded[:user_id]), current_user_id: User.find(@decoded[:id]), find_default: User.find(params[:id])}
+      render json: { resultCode: 1, status: 200, errors: @user.errors.full_messages }
     end
 
   end
@@ -69,7 +64,6 @@ class UsersController < ApplicationController
 
     @decoded = JsonWebToken.decode(header)
     @user = User.find(@decoded[:user_id])
-
     #@user = User.find_by_name!(params[:_name])
   rescue ActiveRecord::RecordNotFound
     render json: { resultCode: 1, errors: ['User not found'] }, status: :ok # :not_found
