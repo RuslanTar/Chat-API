@@ -27,8 +27,8 @@ class UsersController < ApplicationController
   # PATCH /profile/update
   def update
     if @user&.authenticate(params[:password])
-      @user.name = :name
-      @user.email = :email
+      @user.name = params[:name]
+      @user.email = params[:email]
       if @user.save
         render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
       else
