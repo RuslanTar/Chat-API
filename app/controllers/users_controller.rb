@@ -67,13 +67,16 @@ class UsersController < ApplicationController
 
   def password_update
     if @user&.authenticate(params[:password])
-      if @user.update(user_params)
+      if @user.update(params[:newPassword])
         render json: { resultCode: 0, message: "Password successfully changed" },
                status: :ok
       else
         render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
                status: :ok
       end
+    else
+      render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
+             status: :ok
     end
   end
 
