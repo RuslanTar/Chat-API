@@ -61,13 +61,20 @@ class UsersController < ApplicationController
   end
 
   def profile
-    #@user = User.find(params[:id])
     @user_needed = User.find_by_id(params[:id])
     render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name} }, status: :ok
   end
 
   def password_update
-
+    if @user&.authenticate(params[:password])
+      if @user.update(user_params)
+        render json: { resultCode: 0, message: "Password successfully changed" },
+               status: :ok
+      else
+        render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
+               status: :ok
+      end
+    end
   end
 
   private

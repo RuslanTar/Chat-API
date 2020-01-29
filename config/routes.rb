@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   #User actions
   get    '/profile'           => 'users#current_profile'
-  get    '/profile/:id'       => 'users#profile'#, as: 'user_p'
+  get    '/profile/:id'       => 'users#profile'
   get    '/auth/me'           => 'users#current'
   get    '/users'             => 'users#index'
   post   '/users/create'      => 'users#create'
