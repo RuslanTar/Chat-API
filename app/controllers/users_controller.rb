@@ -30,12 +30,12 @@ class UsersController < ApplicationController
       @user.name = :name
       @user.email = :email
       if @user.save
-        render json: { resultCode: 0, message: "Profile successfully updated" },
-               status: :ok
+        render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
       else
-        render json: { resultCode: 1, errors: @user.errors.full_messages},
-               status: :ok
+        render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
+    else
+      render json: { resultCode: 1, errors: ["Invalid password"] }
     end
   end
 
@@ -82,7 +82,7 @@ class UsersController < ApplicationController
         render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
     else
-      render json: { resultCode: 1, errors: "Invalid old password"}, status: :ok
+      render json: { resultCode: 1, errors: ["Invalid old password"]}, status: :ok
     end
   end
 
