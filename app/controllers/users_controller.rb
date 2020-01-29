@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      render json: { resultCode: 0, user: @user }, status: :created
+      render json: { resultCode: 0 }, status: :ok #:created
     else
       render json: { resultCode: 1, errors: @user.errors.full_messages },
              status: :ok #:unprocessable_entity
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
         render json: { resultCode: 0, message: "Password successfully changed" },
                status: :ok
       else
-        render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
+        render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages, auth: @user&.authenticate(params[:password])},
                status: :ok
       end
     else
