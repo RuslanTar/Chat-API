@@ -61,8 +61,13 @@ class UsersController < ApplicationController
   end
 
   def profile
+    #@user = User.find(params[:id])
     @user_needed = User.find_by_id(params[:id])
-    render json: { resultCode: 0, user: {id: @user.id, name: @user.name} }, status: :ok
+    render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name} }, status: :ok
+  end
+
+  def password_update
+
   end
 
   private
