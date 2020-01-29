@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      render json: { resultCode: 0, user: @user }, status: :created
+      render json: { resultCode: 0 }, status: :ok #:created
     else
       render json: { resultCode: 1, errors: @user.errors.full_messages },
              status: :ok #:unprocessable_entity
@@ -49,11 +49,36 @@ class UsersController < ApplicationController
   # If the user is logged-in we will return the user's information.
   def current
     if @user.update!(last_login: Time.now)
-      render json: { resultCode: 0, user: {id: @user.id, name: @user.name, email: @user.email} }, status: :ok
+      render json: { resultCode: 0, user: {id: @user.id, name: @user.name} }, status: :ok
     else
       render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :ok
     end
 
+  end
+
+  def current_profile
+    render json: { resultCode: 0, user: {id: @user.id, name: @user.name, email: @user.email} }, status: :ok
+  end
+
+  def profile
+    @user_needed = User.find_by_id(params[:id])
+    render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name} }, status: :ok
+  end
+
+  def password_update
+    if @user&.authenticate(params[:password])
+      @user.password = :newPassword
+      if @user.save
+        render json: { resultCode: 0, message: "Password successfully changed" },
+               status: :ok
+      else
+        render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
+               status: :ok
+      end
+    else
+      render json: { resultCode: 1, errors: "Invalid old password"},
+             status: :ok
+    end
   end
 
   private

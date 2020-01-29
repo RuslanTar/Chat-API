@@ -16,7 +16,7 @@ class AuthenticationController < ApplicationController
       else
         time = Time.now + 24.hours.to_i
       end
-      render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M")}, status: :ok
+      render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
     else
       render json: { resultCode: 1, errors: ['Incorrect login or password'] }, status: :ok #:unauthorized
     end
