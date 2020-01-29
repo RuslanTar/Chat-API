@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   # get '/*a'                =>'application#not_found'
 
   #User actions
+  get    '/profile'           => 'users#current_profile'
+  get    '/profile/:id'       => 'users#profile'
   get    '/auth/me'           => 'users#current'
   get    '/users'             => 'users#index'
   post   '/users/create'      => 'users#create'
