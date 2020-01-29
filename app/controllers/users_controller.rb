@@ -8,12 +8,12 @@ class UsersController < ApplicationController
     render json: @users, status: :ok
   end
 
-  # GET /users/{name}
+  # GET /users/show
   def show
     render json: @user, status: :ok
   end
 
-  # POST /users
+  # POST /users/create
   def create
     @user = User.new(user_params)
     if @user.save
@@ -24,29 +24,34 @@ class UsersController < ApplicationController
     end
   end
 
-  # PUT /users/{name}
+  # PATCH /profile/update
   def update
-    if @user.update(user_params)
-      render json: { resultCode: 0, message: "Updates succesful"},
-             status: :ok
-    else
-      render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
-             status: :ok #:unprocessable_entity
+    if @user&.authenticate(params[:password])
+      @user.name = :name
+      @user.email = :email
+      if @user.save
+        render json: { resultCode: 0, message: "Profile successfully updated" },
+               status: :ok
+      else
+        render json: { resultCode: 1, errors: @user.errors.full_messages},
+               status: :ok
+      end
     end
   end
 
-  # DELETE /users/{name}
+  # DELETE /users/delete
   def destroy
     if @user.destroy
-      render json: { resultCode: 0, status: 200, message: 'User has been deleted.' }
+      render json: { resultCode: 0, message: 'User has been deleted.' }, status: :ok
     else
-      render json: { resultCode: 1, status: 200, errors: @user.errors.full_messages }
+      render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :ok
     end
     # end
   end
 
   # Call this method to check if the user is logged-in.
   # If the user is logged-in we will return the user's information.
+  # GET /auth/me
   def current
     if @user.update!(last_login: Time.now)
       render json: { resultCode: 0, user: {id: @user.id, name: @user.name} }, status: :ok
@@ -56,28 +61,28 @@ class UsersController < ApplicationController
 
   end
 
+  # GET /profile
   def current_profile
     render json: { resultCode: 0, user: {id: @user.id, name: @user.name, email: @user.email} }, status: :ok
   end
 
+  # GET /profile/:id
   def profile
     @user_needed = User.find_by_id(params[:id])
     render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name} }, status: :ok
   end
 
+  # PATCH /profile/password
   def password_update
     if @user&.authenticate(params[:password])
       @user.password = :newPassword
       if @user.save
-        render json: { resultCode: 0, message: "Password successfully changed" },
-               status: :ok
+        render json: { resultCode: 0, message: "Password successfully changed" }, status: :ok
       else
-        render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
-               status: :ok
+        render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
     else
-      render json: { resultCode: 1, errors: "Invalid old password"},
-             status: :ok
+      render json: { resultCode: 1, errors: "Invalid old password"}, status: :ok
     end
   end
 
@@ -96,7 +101,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.permit(
-        :name, :email, :password #:avatar,
+        :name, :email, :password #:avatar
     )
   end
 end
