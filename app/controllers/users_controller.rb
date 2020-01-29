@@ -75,7 +75,7 @@ class UsersController < ApplicationController
                status: :ok
       end
     else
-      render json: { resultCode: 1, user: @user, errors: @user.errors.full_messages},
+      render json: { resultCode: 1, errors: "Invalid old password"},
              status: :ok
     end
   end
