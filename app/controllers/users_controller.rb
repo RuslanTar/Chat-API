@@ -17,9 +17,12 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
-    @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png"
+    size= 285
+    @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}"
     if @user.save
-      render json: { resultCode: 0 }, status: :ok #:created
+      token = JsonWebToken.encode(user_id: @user.id)
+      time = Time.now + 24.hours.to_i
+      render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
     else
       render json: { resultCode: 1, errors: @user.errors.full_messages },
              status: :ok #:unprocessable_entity
@@ -37,7 +40,8 @@ class UsersController < ApplicationController
       @user.name = params[:name]
       @user.email = params[:email]
       gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
-      @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png"
+      size = 285
+      @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}"
       if @user.save
         if params[:newPassword] != nil
           @user.password = :newPassword
@@ -80,7 +84,8 @@ class UsersController < ApplicationController
   # GET /auth/me
   def current
     if @user.update!(last_login: Time.now)
-      render json: { resultCode: 0, user: {id: @user.id, name: @user.name} }, status: :ok
+      size = 285
+      render json: { resultCode: 0, user: {id: @user.id, name: @user.name, avatar: @user.avatar+"?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}" } }, status: :ok
     else
       render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :ok
     end
@@ -89,13 +94,15 @@ class UsersController < ApplicationController
 
   # GET /profile
   def current_profile
-    render json: { resultCode: 0, user: {id: @user.id, name: @user.name, email: @user.email} }, status: :ok
+    size = 285
+    render json: { resultCode: 0, user: {id: @user.id, name: @user.name, email: @user.email, avatar: @user.avatar+"?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}" } }, status: :ok
   end
 
   # GET /profile/:id
   def profile
     @user_needed = User.find_by_id(params[:id])
-    render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name} }, status: :ok
+    size = 285
+    render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name, avatar: @user.avatar+"?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user_needed.name}.png"}" } }, status: :ok
   end
 
   private

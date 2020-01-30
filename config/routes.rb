@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   get    '/users'             => 'users#index'
   post   '/users/create'      => 'users#create'
   patch  '/profile/update'    => 'users#update'
-  patch  '/profile/password'  => 'users#password_update'
   delete '/users/delete'      => 'users#destroy'
   get    '/users/show'        => 'users#show'
 end
