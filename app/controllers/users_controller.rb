@@ -16,13 +16,13 @@ class UsersController < ApplicationController
   # POST /users/create
   def create
     @user = User.new(user_params)
-    # gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
+    gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
     # url = "https://gravatar.com/avatar/#{gravatar_id}.png"
-    # @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png"
+    @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png"
     if @user.save
-      gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
-      url = "https://gravatar.com/avatar/#{gravatar_id}.png"
-      @user.update!(avatar: url)
+      # gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
+      # url = "https://gravatar.com/avatar/#{gravatar_id}.png"
+      # @user.update!(avatar: url)
       render json: { resultCode: 0 }, status: :ok #:created
     else
       render json: { resultCode: 1, errors: @user.errors.full_messages },
@@ -41,7 +41,7 @@ class UsersController < ApplicationController
       @user.name = params[:name]
       @user.email = params[:email]
       if @user.save
-        render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
+        render json: { resultCode: 0, message: "Profile successfully updated", len_of_params: params.length }, status: :ok
       else
         render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
