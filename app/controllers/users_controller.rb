@@ -84,8 +84,7 @@ class UsersController < ApplicationController
   # GET /auth/me
   def current
     if @user.update!(last_login: Time.now)
-      size = 285
-      render json: { resultCode: 0, user: {id: @user.id, name: @user.name, avatar: @user.avatar+"?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}" } }, status: :ok
+      render json: { resultCode: 0, user: {id: @user.id, name: @user.name, avatar: @user.avatar } }, status: :ok
     else
       render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :ok
     end
@@ -94,15 +93,13 @@ class UsersController < ApplicationController
 
   # GET /profile
   def current_profile
-    size = 285
-    render json: { resultCode: 0, user: {id: @user.id, name: @user.name, email: @user.email, avatar: @user.avatar+"?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}" } }, status: :ok
+    render json: { resultCode: 0, user: {id: @user.id, name: @user.name, email: @user.email, avatar: @user.avatar } }, status: :ok
   end
 
   # GET /profile/:id
   def profile
     @user_needed = User.find_by_id(params[:id])
-    size = 285
-    render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name, avatar: @user.avatar+"?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user_needed.name}.png"}" } }, status: :ok
+    render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name, avatar: @user_needed.avatar } }, status: :ok
   end
 
   private
