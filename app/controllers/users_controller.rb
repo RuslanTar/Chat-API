@@ -41,7 +41,7 @@ class UsersController < ApplicationController
       @user.name = params[:name]
       @user.email = params[:email]
       if @user.save
-        render json: { resultCode: 0, message: "Profile successfully updated", len_of_params: params.length }, status: :ok
+        render json: { resultCode: 0, message: "Profile successfully updated", len_of_params: params.length() }, status: :ok
       else
         render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
