@@ -43,10 +43,10 @@ class UsersController < ApplicationController
       size = 285
       @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}"
       if @user.save
-        if params[:newPassword] != nil
+        if params[:newPassword].nil?
           @user.password = :newPassword
         end
-        render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
+        render json: { resultCode: 0, message: "Profile successfully updated", newpass: :newPassword, ifNIL: :newPassword==nil, ifNotNIL: :newPassword.nil? }, status: :ok
       else
         render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
