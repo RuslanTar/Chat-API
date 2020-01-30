@@ -17,12 +17,20 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
+      gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
+      url = "https://gravatar.com/avatar/#{gravatar_id}.png"
+      @user.update!(picture: url)
       render json: { resultCode: 0 }, status: :ok #:created
     else
       render json: { resultCode: 1, errors: @user.errors.full_messages },
              status: :ok #:unprocessable_entity
     end
   end
+
+  # def gravatar_url(email)
+  #   gravatar_id = Digest::MD5::hexdigest(email).downcase
+  #   return url = "https://gravatar.com/avatar/#{gravatar_id}.png"
+  # end
 
   # PATCH /profile/update
   def update
@@ -101,7 +109,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.permit(
-        :name, :email, :password #:avatar
+        :name, :email, :password #, :picture
     )
   end
 end
