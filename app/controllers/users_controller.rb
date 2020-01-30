@@ -46,7 +46,21 @@ class UsersController < ApplicationController
         render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
     else
-      render json: { resultCode: 1, errors: ["Invalid password"] }
+      render json: { resultCode: 1, errors: ["Invalid current password"] }
+    end
+  end
+
+  # PATCH /profile/password
+  def password_update
+    if @user&.authenticate(params[:password])
+      @user.password = :newPassword
+      if @user.save
+        render json: { resultCode: 0, message: "Password successfully changed" }, status: :ok
+      else
+        render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
+      end
+    else
+      render json: { resultCode: 1, errors: ["Invalid old password"]}, status: :ok
     end
   end
 
@@ -81,20 +95,6 @@ class UsersController < ApplicationController
   def profile
     @user_needed = User.find_by_id(params[:id])
     render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name} }, status: :ok
-  end
-
-  # PATCH /profile/password
-  def password_update
-    if @user&.authenticate(params[:password])
-      @user.password = :newPassword
-      if @user.save
-        render json: { resultCode: 0, message: "Password successfully changed" }, status: :ok
-      else
-        render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
-      end
-    else
-      render json: { resultCode: 1, errors: ["Invalid old password"]}, status: :ok
-    end
   end
 
   private
