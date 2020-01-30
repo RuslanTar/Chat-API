@@ -42,11 +42,11 @@ class UsersController < ApplicationController
       gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
       size = 285
       @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}"
+      unless params[:newPassword].nil?
+        @user.password = params[:newPassword]
+      end
       if @user.save
-        unless params[:newPassword].nil?
-          @user.password = params[:newPassword]
-        end
-        render json: { resultCode: 0, message: "Profile successfully updated", newpass: params[:newPassword], ifNIL: :newPassword==nil, ifNotNIL: :newPassword.nil? }, status: :ok
+        render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
       else
         render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
