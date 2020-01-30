@@ -51,19 +51,19 @@ class UsersController < ApplicationController
     end
   end
 
-  # PATCH /profile/password
-  def password_update
-    if @user&.authenticate(params[:password])
-      @user.password = :newPassword
-      if @user.save
-        render json: { resultCode: 0, message: "Password successfully changed" }, status: :ok
-      else
-        render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
-      end
-    else
-      render json: { resultCode: 1, errors: ["Invalid old password"]}, status: :ok
-    end
-  end
+  # # PATCH /profile/password
+  # def password_update
+  #   if @user&.authenticate(params[:password])
+  #     @user.password = :newPassword
+  #     if @user.save
+  #       render json: { resultCode: 0, message: "Password successfully changed" }, status: :ok
+  #     else
+  #       render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
+  #     end
+  #   else
+  #     render json: { resultCode: 1, errors: ["Invalid old password"]}, status: :ok
+  #   end
+  # end
 
   # DELETE /users/delete
   def destroy
