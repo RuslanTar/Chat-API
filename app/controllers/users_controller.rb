@@ -43,8 +43,9 @@ class UsersController < ApplicationController
       if @user.save
         if params[:newPassword]
           render json: { msg: "All good!" }
+        else
+          render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
         end
-        render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
       else
         render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
