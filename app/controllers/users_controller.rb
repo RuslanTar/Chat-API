@@ -16,6 +16,8 @@ class UsersController < ApplicationController
   # POST /users/create
   def create
     @user = User.new(user_params)
+    gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
+    @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png"
     if @user.save
       render json: { resultCode: 0 }, status: :ok #:created
     else
@@ -24,20 +26,44 @@ class UsersController < ApplicationController
     end
   end
 
+  # def gravatar_url(email)
+  #   gravatar_id = Digest::MD5::hexdigest(email).downcase
+  #   return url = "https://gravatar.com/avatar/#{gravatar_id}.png"
+  # end
+
   # PATCH /profile/update
   def update
     if @user&.authenticate(params[:password])
       @user.name = params[:name]
       @user.email = params[:email]
+      gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
+      @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png"
       if @user.save
+        if params[:newPassword] != nil
+          @user.password = :newPassword
+        end
         render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
       else
         render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
       end
     else
-      render json: { resultCode: 1, errors: ["Invalid password"] }
+      render json: { resultCode: 1, errors: ["Invalid current password"] }
     end
   end
+
+  # # PATCH /profile/password
+  # def password_update
+  #   if @user&.authenticate(params[:password])
+  #     @user.password = :newPassword
+  #     if @user.save
+  #       render json: { resultCode: 0, message: "Password successfully changed" }, status: :ok
+  #     else
+  #       render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
+  #     end
+  #   else
+  #     render json: { resultCode: 1, errors: ["Invalid old password"]}, status: :ok
+  #   end
+  # end
 
   # DELETE /users/delete
   def destroy
@@ -72,20 +98,6 @@ class UsersController < ApplicationController
     render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name} }, status: :ok
   end
 
-  # PATCH /profile/password
-  def password_update
-    if @user&.authenticate(params[:password])
-      @user.password = :newPassword
-      if @user.save
-        render json: { resultCode: 0, message: "Password successfully changed" }, status: :ok
-      else
-        render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
-      end
-    else
-      render json: { resultCode: 1, errors: ["Invalid old password"]}, status: :ok
-    end
-  end
-
   private
 
   def find_user
@@ -101,7 +113,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.permit(
-        :name, :email, :password #:avatar
+        :name, :email, :password, :avatar
     )
   end
 end
