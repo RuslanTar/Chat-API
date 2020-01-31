@@ -85,6 +85,8 @@ class UsersController < ApplicationController
   private
 
   def refresh
+    header = request.headers['Authorization']
+    header = header.split(' ').last if header
     @decoded = JsonWebToken.decode(header)
     @user = User.find(@decoded[:user_id])
     rescue ActiveRecord::RecordNotFound
