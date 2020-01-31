@@ -85,12 +85,6 @@ class UsersController < ApplicationController
   private
 
   def refresh
-    header = request.headers['Authorization']
-    header = header.split(' ').last if header
-    @decoded = JsonWebToken.decode(header)
-    @user = User.find(@decoded[:user_id])
-    rescue ActiveRecord::RecordNotFound
-      render json: { resultCode: 1, errors: ['User not found'] }, status: :not_found
     token = JsonWebToken.encode(user_id: @user.id)
     time = Time.now + 24.hours.to_i
     render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
