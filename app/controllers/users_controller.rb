@@ -81,14 +81,14 @@ class UsersController < ApplicationController
     @user_needed = User.find_by_id(params[:id])
     render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name, avatar: @user_needed.avatar } }, status: :ok
   end
-
-  private
-
+  
   def refresh
     token = JsonWebToken.encode(user_id: @user.id)
     time = Time.now + 24.hours.to_i
     render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
   end
+
+  private
 
   def find_user
     header = request.headers['Authorization']
