@@ -112,7 +112,7 @@ class UsersController < ApplicationController
     @user = User.find(@decoded[:user_id])
     #@user = User.find_by_name!(params[:_name])
   rescue ActiveRecord::RecordNotFound
-    render json: { resultCode: 1, errors: ['User not found'] }, status: # :not_found
+    render json: { resultCode: 1, errors: ['User not found'] }, status: :not_found
   end
 
   def user_params
