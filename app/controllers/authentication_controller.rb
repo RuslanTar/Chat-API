@@ -16,7 +16,7 @@ class AuthenticationController < ApplicationController
       else
         time = Time.now + 24.hours.to_i
       end
-      render json: { resultCode: 0, REMEMBERME: params[:rememberMe], isTRUE: params[:rememberMe]==true,token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
+      render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
     else
       render json: { resultCode: 1, errors: ['Incorrect login or password'] }, status: :unauthorized
     end
