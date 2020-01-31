@@ -18,7 +18,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
     size= 285
-    @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}"
+    @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name.delete(' ')}.png"}"
     if @user.save
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
@@ -41,7 +41,7 @@ class UsersController < ApplicationController
       @user.email = params[:email]
       gravatar_id = Digest::MD5::hexdigest(@user.email.downcase)
       size = 285
-      @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name}.png"}"
+      @user.avatar = "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{"https://api.adorable.io/avatars/#{size}/#{@user.name.delete(' ')}.png"}"
       unless params[:newPassword].nil?
         @user.password = params[:newPassword]
       end
