@@ -11,12 +11,12 @@ class AuthenticationController < ApplicationController
     @user = User.find_by_email(params[:email])
     if @user&.authenticate(params[:password])
       token = JsonWebToken.encode(user_id: @user.id)
-      if params[:rememberMe]
+      if params[:rememberMe]==true
         time = Time.now + 168.hours.to_i
       else
         time = Time.now + 24.hours.to_i
       end
-      render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
+      render json: { resultCode: 0, REMEMBERME: params[:rememberMe], isTRUE: params[:rememberMe]==true,token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
     else
       render json: { resultCode: 1, errors: ['Incorrect login or password'] }, status: :unauthorized
     end

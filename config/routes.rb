@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   match '*all', controller: 'application', action: 'cors_preflight_check', via: [:options]
   post '/auth/login'         =>'authentication#login'
+  post '/refresh' => 'users#refresh'
   # get '/*a'                =>'application#not_found'
 
   #User actions
