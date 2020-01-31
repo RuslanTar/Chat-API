@@ -22,17 +22,11 @@ class UsersController < ApplicationController
     if @user.save
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
-      render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
+      render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :created
     else
-      render json: { resultCode: 1, errors: @user.errors.full_messages },
-             status: :ok #:unprocessable_entity
+      render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
   end
-
-  # def gravatar_url(email)
-  #   gravatar_id = Digest::MD5::hexdigest(email).downcase
-  #   return url = "https://gravatar.com/avatar/#{gravatar_id}.png"
-  # end
 
   # PATCH /profile/update
   def update
@@ -48,33 +42,19 @@ class UsersController < ApplicationController
       if @user.save
         render json: { resultCode: 0, message: "Profile successfully updated" }, status: :ok
       else
-        render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
+        render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :unprocessable_entity
       end
     else
-      render json: { resultCode: 1, errors: ["Invalid current password"] }
+      render json: { resultCode: 1, errors: ["Invalid current password"] }, status: :unauthorized
     end
   end
-
-  # # PATCH /profile/password
-  # def password_update
-  #   if @user&.authenticate(params[:password])
-  #     @user.password = :newPassword
-  #     if @user.save
-  #       render json: { resultCode: 0, message: "Password successfully changed" }, status: :ok
-  #     else
-  #       render json: { resultCode: 1, errors: @user.errors.full_messages}, status: :ok
-  #     end
-  #   else
-  #     render json: { resultCode: 1, errors: ["Invalid old password"]}, status: :ok
-  #   end
-  # end
 
   # DELETE /users/delete
   def destroy
     if @user.destroy
       render json: { resultCode: 0, message: 'User has been deleted.' }, status: :ok
     else
-      render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :ok
+      render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
     # end
   end
@@ -86,7 +66,7 @@ class UsersController < ApplicationController
     if @user.update!(last_login: Time.now)
       render json: { resultCode: 0, user: {id: @user.id, name: @user.name, avatar: @user.avatar } }, status: :ok
     else
-      render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :ok
+      render json: { resultCode: 1, errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
 
   end
