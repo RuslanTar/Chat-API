@@ -1,14 +1,13 @@
 Rails.application.routes.draw do
   resources :users, param: :_name
-  resources :room, only: [:index, :create]
+  resources :rooms, only: [:index, :create]
   resources :room_messages, only: [:create]
 
   mount ActionCable.server => '/cable'
 
   match '*all', controller: 'application', action: 'cors_preflight_check', via: [:options]
-  post '/auth/login'         =>'authentication#login'
+  post '/auth/login'         => 'authentication#login'
   post '/refresh'            => 'users#refresh'
-  # get '/*a'                =>'application#not_found'
 
   #User actions
   post   '/refresh'           => 'users#refresh'
@@ -20,4 +19,10 @@ Rails.application.routes.draw do
   patch  '/profile/update'    => 'users#update'
   delete '/users/delete'      => 'users#destroy'
   get    '/users/show'        => 'users#show'
+
+  #Chat actions
+  get  '/rooms/:id/messages', to: 'rooms#show'
+  post '/rooms/:id/messages', to: 'rooms#send_message'
+  post '/rooms/:id/users'   , to: 'rooms#assign_user'
+  post '/rooms/:id/users/remove'   , to: 'rooms#remove_assign_user'
 end

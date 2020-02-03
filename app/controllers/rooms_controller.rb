@@ -1,63 +1,74 @@
 class RoomsController < ApplicationController
-  before_action :load_entities
+  # before_action :load_entities
+  before_action :set_room, except: [:create, :index]
 
   def index
     @rooms = Room.all
     render json: @rooms
   end
 
-  def new
-    @room = Room.new
-  end
-
   def create
-    @room = Room.new(permitted_parameters)
+    @room = Room.new(permited_parameters)
 
     if @room.save
-      #flash[:success] = "Room #{@room.name} created successfully"
-      #redirect_to rooms_path
-      #else
-      #render :new
-      #end
       serialized_data = ActiveModelSerializers::Adapter::Json.new(
           RoomSerializer.new(@room)
       ).serializable_hash
       ActionCable.server.broadcast 'rooms_channel', serialized_data
-      head :ok
+      render json: serialized_data
     end
   end
 
   def show
-    @room_message = RoomMessage.new room: @room
-    @room_messages = @room.room_messages.includes(:user)
-  end
-
-  #def show
-  #  @chatroom = Chatroom.find_by(slug: params[:slug])
-  #  @message = Message.new
-  #end
-
-
-  def edit
-  end
-
-  def update
-    if @room.update_attributes(permitted_parameters)
-      flash[:success] = "Room #{@room.name} updated successfully"
-      redirect_to rooms_path
+    if @room.permited_users.include?(current_user)
+      @room_messages = @room.room_messages
+      render json: { messages: @room_messages }, status: :ok
     else
-      render :new
+      render json: { message: "User forbidden" }, status: :forbidden
     end
   end
 
-  protected
-
-  def load_entities
-    @rooms = Room.all
-    @room = Room.find(params[:id]) if params[:id]
+  def assign_user
+    @room.assigned_users.create(user: current_user)
+    render json: @room.permited_users
   end
 
-  def permitted_parameters
+  def remove_assign_user
+    if @room.assigned_users.find_by(user: current_user)
+      @room.assigned_users.find_by(user: current_user).destroy
+      head :ok
+    else
+      render json: { errors: "This user don't assigned in this chat" }, status: :forbidden
+    end
+  end
+
+  def send_message
+    @message = @room.room_messages.create(message: params[:message], user: current_user)
+    ActionCable.server.broadcast('room', @room)
+    render json: @room.message_with_usernames
+  end
+
+  private
+
+  def current_user
+    header = request.headers['Authorization']
+    header = header.split(' ').last if header
+    decoded = JsonWebToken.decode(header)
+    User.find(decoded[:user_id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { errors: ['User not found'] }, status: :not_found
+  end
+
+  def set_room
+    @room = Room.find(params[:id])
+  end
+
+  # def load_entities
+  #   @rooms = Room.all
+  #   @room = Room.find(params[:id]) if params[:id]
+  # end
+
+  def permited_parameters
     params.require(:room).permit(:name)
   end
 end

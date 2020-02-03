@@ -6,12 +6,16 @@
 #
 default: &default
   adapter: postgresql
+  endcoding: unicode
   pool: 5 # <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
 development:
   <<: *default
-  database: db/development
+#  database: db/development
+  database: chatapp_dev
+  user: everlabsadmin
+  password: everlabsadmin
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

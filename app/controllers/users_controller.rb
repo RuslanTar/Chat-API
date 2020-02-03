@@ -85,12 +85,6 @@ class UsersController < ApplicationController
   def refresh
     token = JsonWebToken.encode(user_id: @user.id)
     time = Time.now + 24.hours.to_i
-    render json: { token: token, exp: time.strftime("%m-%d-%Y %H:%M") }, status: :ok
-  end
-  
-  def refresh
-    token = JsonWebToken.encode(user_id: @user.id)
-    time = Time.now + 24.hours.to_i
     render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M"), message: "You are currently Logged-in as #{@user.name}"}, status: :ok
   end
 
