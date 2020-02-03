@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # get '/*a'                =>'application#not_found'
 
   #User actions
+  post   '/refresh'           => 'users#refresh'
   get    '/profile'           => 'users#current_profile'
   get    '/profile/:id'       => 'users#profile'
   get    '/auth/me'           => 'users#current'
