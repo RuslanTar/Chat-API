@@ -82,6 +82,12 @@ class UsersController < ApplicationController
     render json: { resultCode: 0, user: {id: @user_needed.id, name: @user_needed.name, avatar: @user_needed.avatar } }, status: :ok
   end
 
+  def refresh
+    token = JsonWebToken.encode(user_id: @user.id)
+    time = Time.now + 24.hours.to_i
+    render json: { resultCode: 0, token: token, exp: time.strftime("%m-%d-%Y %H:%M") }, status: :ok
+  end
+
   private
 
   def find_user
