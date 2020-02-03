@@ -8,7 +8,7 @@ gem "redis"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.2', '>= 6.0.2.1'
 gem 'bcrypt', '~> 3.1.7'
-gem 'wdm', '>= 0.1.0'
+# gem 'wdm', '>= 0.1.0'
 gem 'active_model_serializers'
 gem 'rack-cors'
 # gem 'knock'
