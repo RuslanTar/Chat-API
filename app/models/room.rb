@@ -7,7 +7,7 @@ class Room < ApplicationRecord
 
   def message_with_usernames
     room_messages.map { |message|
-      message.slice(:id, :username, :message, :created_at)
+      message.slice(:id, :username, :avatar, :message, :created_at)
     }
   end
 

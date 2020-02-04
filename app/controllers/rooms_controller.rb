@@ -4,7 +4,7 @@ class RoomsController < ApplicationController
 
   def index
     @rooms = Room.all
-    render json: @rooms
+    render json: @rooms.permited_users.include?(current_user)
   end
 
   def create
@@ -22,20 +22,21 @@ class RoomsController < ApplicationController
   def show
     if @room.permited_users.include?(current_user)
       @room_messages = @room.room_messages
-      render json: { messages: @room_messages }, status: :ok
+      render json: { message: @room_messages }, status: :ok
     else
       render json: { message: "User forbidden" }, status: :forbidden
     end
   end
 
   def assign_user
-    @room.assigned_users.create(user: current_user)
+    @room.assigned_users.create(user: User.find(params[:name]))
     render json: @room.permited_users
   end
 
   def remove_assign_user
-    if @room.assigned_users.find_by(user: current_user)
-      @room.assigned_users.find_by(user: current_user).destroy
+    @usr = User.find(params[:name])
+    if @room.assigned_users.find_by(user: @usr)
+      @room.assigned_users.find_by(user: @usr).destroy
       head :ok
     else
       render json: { errors: "This user don't assigned in this chat" }, status: :forbidden
