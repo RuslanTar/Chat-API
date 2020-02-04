@@ -14,7 +14,7 @@ class RoomsController < ApplicationController
       serialized_data = ActiveModelSerializers::Adapter::Json.new(
           RoomSerializer.new(@room)
       ).serializable_hash
-      ActionCable.server.broadcast 'rooms_channel', serialized_data
+      ActionCable.server.broadcast 'rooms', serialized_data
       render json: serialized_data
     end
   end
