@@ -4,7 +4,7 @@ class RoomsController < ApplicationController
 
   def index
     @rooms = Room.all
-    render json: @rooms.permited_users.include?(current_user)
+    render json: @rooms.select {|room| room.permited_users.include?(current_user) }
   end
 
   def create
@@ -14,8 +14,11 @@ class RoomsController < ApplicationController
       serialized_data = ActiveModelSerializers::Adapter::Json.new(
           RoomSerializer.new(@room)
       ).serializable_hash
+      @room.assigned_users.create(user: User.find(current_user))
       ActionCable.server.broadcast 'rooms', serialized_data
       render json: serialized_data
+    else
+      render json: { errors: @room.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -29,14 +32,14 @@ class RoomsController < ApplicationController
   end
 
   def assign_user
-    @room.assigned_users.create(user: User.find(params[:name]))
+    @room.assigned_users.create(user: User.find_by_name(params[:name]))
     render json: @room.permited_users
   end
 
   def remove_assign_user
-    @usr = User.find(params[:name])
-    if @room.assigned_users.find_by(user: @usr)
-      @room.assigned_users.find_by(user: @usr).destroy
+    usr = User.find_by_name(params[:name])
+    if @room.assigned_users.find_by(user: usr)
+      @room.assigned_users.find_by(user: usr).destroy
       head :ok
     else
       render json: { errors: "This user don't assigned in this chat" }, status: :forbidden

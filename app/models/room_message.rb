@@ -5,4 +5,8 @@ class RoomMessage < ApplicationRecord
   def username
     user.name
   end
+
+  def avatar
+    user.avatar
+  end
 end
