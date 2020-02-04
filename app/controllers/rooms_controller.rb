@@ -48,7 +48,7 @@ class RoomsController < ApplicationController
 
   def send_message
     @message = @room.room_messages.create(message: params[:message], user: current_user)
-    ActionCable.server.broadcast('room', @room)
+    ActionCable.server.broadcast('messages', @room)
     render json: @room.message_with_usernames
   end
 
