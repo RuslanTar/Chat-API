@@ -1,10 +1,11 @@
 class RoomsController < ApplicationController
   # before_action :load_entities
+  before_action :current_user
   before_action :set_room, except: [:create, :index]
 
   def index
     @rooms = Room.all
-    render json: @rooms.select {|room| room.permited_users.include?(current_user) }
+    render json: @rooms.select {|room| room.permited_users.include?(@user) }
   end
 
   def create
@@ -14,7 +15,7 @@ class RoomsController < ApplicationController
       serialized_data = ActiveModelSerializers::Adapter::Json.new(
           RoomSerializer.new(@room)
       ).serializable_hash
-      @room.assigned_users.create(user: User.find(current_user))
+      @room.assigned_users.create(user: @user)
       ActionCable.server.broadcast 'rooms', serialized_data
       render json: serialized_data
     else
@@ -23,7 +24,7 @@ class RoomsController < ApplicationController
   end
 
   def show
-    if @room.permited_users.include?(current_user)
+    if @room.permited_users.include?(@user)
       @room_messages = @room.room_messages
       render json: { message: @room_messages }, status: :ok
     else
@@ -47,7 +48,7 @@ class RoomsController < ApplicationController
   end
 
   def send_message
-    @message = @room.room_messages.create(message: params[:message], user: current_user)
+    @message = @room.room_messages.create(message: params[:message], user: @user)
     ActionCable.server.broadcast('messages', @room)
     render json: @room.message_with_usernames
   end
@@ -58,7 +59,7 @@ class RoomsController < ApplicationController
     header = request.headers['Authorization']
     header = header.split(' ').last if header
     decoded = JsonWebToken.decode(header)
-    User.find(decoded[:user_id])
+    @user = User.find(decoded[:user_id])
   rescue ActiveRecord::RecordNotFound
     render json: { errors: ['User not found'] }, status: :not_found
   end
