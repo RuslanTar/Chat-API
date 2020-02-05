@@ -104,6 +104,6 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
   config.action_cable.mount_path = '/cable'
-  config.action_cable.url = 'ws://animals-chat-react.herokuapp.com/cable'
+  config.action_cable.url = 'wss://animals-chat-react.herokuapp.com/cable'
   config.action_cable.allowed_request_origins = ["http://animals-chat-react.herokuapp.com"]
 end
