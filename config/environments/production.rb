@@ -105,6 +105,6 @@ Rails.application.configure do
 
   config.force_ssl = true
   config.action_cable.mount_path = '/cable'
-  config.action_cable.url = 'wss://animals-chat-react.herokuapp.com/cable'
+  config.action_cable.url = 'ws://animals-chat-react.herokuapp.com/cable'
   config.action_cable.allowed_request_origins = ["http://animals-chat-react.herokuapp.com"]
 end
