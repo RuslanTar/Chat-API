@@ -8,7 +8,8 @@ class RoomsController < ApplicationController
         RoomSerializer.new(@rooms)
     ).serializable_hash
     ActionCable.server.broadcast 'rooms', serialized_data
-    render json: @rooms.select { |room| room.permited_users.include?(@user) }
+    head :ok
+    # render json: @rooms.select { |room| room.permited_users.include?(@user) }
   end
 
   def create
