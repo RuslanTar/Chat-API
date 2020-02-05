@@ -7,7 +7,7 @@ class RoomsController < ApplicationController
     serialized_data = ActiveModelSerializers::Adapter::Json.new(
         RoomSerializer.new(@rooms)
     ).serializable_hash
-    ActionCable.server.broadcast @rooms, serialized_data
+    ActionCable.server.broadcast 'rooms', serialized_data
     render json: @rooms.select { |room| room.permited_users.include?(@user) }
   end
 
@@ -19,7 +19,7 @@ class RoomsController < ApplicationController
           RoomSerializer.new(@room)
       ).serializable_hash
       @room.assigned_users.create(user: @user)
-      ActionCable.server.broadcast @rooms, serialized_data
+      ActionCable.server.broadcast 'rooms', serialized_data
       render json: serialized_data
     else
       render json: { errors: @room.errors.full_messages }, status: :unprocessable_entity
