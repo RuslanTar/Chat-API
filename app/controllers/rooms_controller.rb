@@ -1,22 +1,25 @@
 class RoomsController < ApplicationController
-  # before_action :load_entities
   before_action :current_user
   before_action :set_room, except: [:create, :index]
 
   def index
     @rooms = Room.all
-    render json: @rooms.select {|room| room.permited_users.include?(@user) }
+    serialized_data = ActiveModelSerializers::Adapter::Json.new(
+        RoomSerializer.new(@rooms)
+    ).serializable_hash
+    ActionCable.server.broadcast @rooms, serialized_data
+    render json: @rooms.select { |room| room.permited_users.include?(@user) }
   end
 
   def create
     @room = Room.new(permited_parameters)
-
-    if @room.save
+    @rooms = Room.all
+    if room.save
       serialized_data = ActiveModelSerializers::Adapter::Json.new(
           RoomSerializer.new(@room)
       ).serializable_hash
       @room.assigned_users.create(user: @user)
-      ActionCable.server.broadcast 'rooms', serialized_data
+      ActionCable.server.broadcast @rooms, serialized_data
       render json: serialized_data
     else
       render json: { errors: @room.errors.full_messages }, status: :unprocessable_entity
@@ -49,7 +52,7 @@ class RoomsController < ApplicationController
 
   def send_message
     @message = @room.room_messages.create(message: params[:message], user: @user)
-    ActionCable.server.broadcast('messages', @room)
+    ActionCable.server.broadcast('messages', @room.room_messages)
     render json: @room.message_with_usernames
   end
 
@@ -67,11 +70,6 @@ class RoomsController < ApplicationController
   def set_room
     @room = Room.find(params[:id])
   end
-
-  # def load_entities
-  #   @rooms = Room.all
-  #   @room = Room.find(params[:id]) if params[:id]
-  # end
 
   def permited_parameters
     params.require(:room).permit(:name)
