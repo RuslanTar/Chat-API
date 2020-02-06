@@ -55,6 +55,16 @@ class RoomsController < ApplicationController
     end
   end
 
+  # DELETE /rooms/:id/delete
+  def destroy
+    if @room.destroy
+      render json: { message: 'Room has been deleted.' }, status: :ok
+    else
+      render json: { errors: @room.errors.full_messages }, status: :unprocessable_entity
+    end
+    # end
+  end
+
   def send_message
     @message = @room.room_messages.create(message: params[:message], user: @user)
     if @room.save
