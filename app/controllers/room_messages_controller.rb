@@ -1,6 +1,5 @@
 class RoomMessagesController < ApplicationController
-  before_action :load_entities
-  before_action :find_user, except: %i[create index]
+  # before_action :find_user, except: %i[create index]
 
   def create
     room_message = Message.new(message_params)
@@ -18,10 +17,6 @@ class RoomMessagesController < ApplicationController
 
   def message_params
     params.require(:room_message).permit(:message, :room_id)
-  end
-  
-  def load_entities
-    @room = Room.find params.dig(:room_message, :room_id)
   end
 end
 
