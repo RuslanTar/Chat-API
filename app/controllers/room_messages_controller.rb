@@ -9,7 +9,7 @@ class RoomMessagesController < ApplicationController
       serialized_data = ActiveModelSerializers::Adapter::Json.new(
           RoomMessageSerializer.new(room_message)
       ).serializable_hash
-      RoomMessagesChannel.broadcast_to room, serialized_data
+      # RoomMessagesChannel.broadcast_to room, serialized_data
       head :ok
     end
   end
