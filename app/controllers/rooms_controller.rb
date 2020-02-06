@@ -14,7 +14,7 @@ class RoomsController < ApplicationController
   def create
     @room = Room.new(permited_parameters)
     @rooms = Room.all
-    if room.save
+    if @room.save
       serialized_data = ActiveModelSerializers::Adapter::Json.new(
           RoomSerializer.new(@room)
       ).serializable_hash
@@ -37,7 +37,12 @@ class RoomsController < ApplicationController
 
   def assign_user
     @room.assigned_users.create(user: User.find_by_name(params[:name]))
-    render json: @room.permited_users
+    if @room.save
+      render json: @room.permited_users
+    else
+      render json: { errors: @room.errors.full_messages }, status: :unprocessable_entity
+    end
+
   end
 
   def remove_assign_user
@@ -52,8 +57,12 @@ class RoomsController < ApplicationController
 
   def send_message
     @message = @room.room_messages.create(message: params[:message], user: @user)
-    # ActionCable.server.broadcast('messages', @room.room_messages)
-    render json: @room.message_with_usernames
+    if @room.save
+      render json: @room.message_with_usernames
+      # ActionCable.server.broadcast('messages', @room.room_messages)
+    else
+      render json: { errors: @room.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private
