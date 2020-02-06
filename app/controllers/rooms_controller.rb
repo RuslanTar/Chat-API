@@ -28,8 +28,7 @@ class RoomsController < ApplicationController
 
   def show
     if @room.permited_users.include?(@user)
-      @room_messages = @room.room_messages
-      render json: { message: @room_messages }, status: :ok
+      render json: { message: @room.message_with_usernames }, status: :ok
     else
       render json: { message: "User forbidden" }, status: :forbidden
     end
@@ -66,7 +65,7 @@ class RoomsController < ApplicationController
   end
 
   def send_message
-    @message = @room.room_messages.create(message: params[:message], user: @user)
+    message = @room.room_messages.create(message: params[:message], user: @user)
     if @room.save
       render json: @room.message_with_usernames
       # ActionCable.server.broadcast('messages', @room.room_messages)
