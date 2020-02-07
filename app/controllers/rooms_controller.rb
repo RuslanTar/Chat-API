@@ -47,8 +47,8 @@ class RoomsController < ApplicationController
 
   def remove_assign_user
     usr = User.find_by_name(params[:name])
-    if @room.assigned_users.find_by(user: usr)
-      @room.assigned_users.find_by(user: usr).destroy
+    if @room.permited_users.find_by(user: usr)
+      @room.permited_users.find_by(user: usr).destroy
       if @room.permited_users.size == 0
         @room.destroy
       end
