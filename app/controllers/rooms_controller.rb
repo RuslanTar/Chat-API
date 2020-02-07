@@ -49,6 +49,9 @@ class RoomsController < ApplicationController
     usr = User.find_by_name(params[:name])
     if @room.assigned_users.find_by(user: usr)
       @room.assigned_users.find_by(user: usr).destroy
+      if @room.permited_users.size == 0
+        @room.destroy
+      end
       head :ok
     else
       render json: { errors: "This user don't assigned in this chat" }, status: :forbidden
