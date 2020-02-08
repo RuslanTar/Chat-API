@@ -51,12 +51,10 @@ class UsersController < ApplicationController
 
   # DELETE /users/delete
   def destroy
-    if @user.destroy
-      render json: { message: 'User has been deleted.' }, status: :ok
-    else
-      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
-    end
-    # end
+    @user.destroy
+    render json: { message: 'User has been deleted.' }, status: :ok
+
+      #render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
   end
 
   # Call this method to check if the user is logged-in.
