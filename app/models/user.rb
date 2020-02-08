@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   has_many :room_messages, dependent: :destroy
   has_many :rooms, through: :room_messages
-  has_many :assigned_users
+  has_many :assigned_users, dependent: :destroy
   has_many :permited_rooms, through: :assigned_users
 
   has_secure_password
