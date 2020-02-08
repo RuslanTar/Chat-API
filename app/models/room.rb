@@ -3,7 +3,7 @@ class Room < ApplicationRecord
            inverse_of: :room
   has_many :users, through: :room_messages
   has_many :assigned_users
-  has_many :permited_users, through: :assigned_users, source: :user
+  has_many :permited_users, through: :assigned_users#, source: :user
 
   def message_with_usernames
     room_messages.map { |message|
