@@ -44,6 +44,10 @@ class RoomsController < ApplicationController
       render json: { errors: @room.errors.full_messages }, status: :unprocessable_entity
     end
   end
+  
+  def show_permitted_users
+	render json: @room.permited_users
+  end
 
   def remove_assign_user
     usr = User.find_by_name(params[:name])

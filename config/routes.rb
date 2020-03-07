@@ -26,4 +26,5 @@ Rails.application.routes.draw do
   post '/rooms/:id/users/add'      , to: 'rooms#assign_user'
   post '/rooms/:id/users/remove'   , to: 'rooms#remove_assign_user'
   delete '/rooms/:id/delete'       , to: 'rooms#destroy'
+  get  '/rooms/:id/users'		   , to: 'rooms#show_permitted_users'
 end
