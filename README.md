@@ -1,6 +1,6 @@
 # README
 
-http://animals-chat-react.herokuapp.com/
+Published at https://yehor-germanenko.github.io/chat-react/
 
 Ruby version: ruby-2.6.5
 
